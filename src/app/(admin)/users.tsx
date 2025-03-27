@@ -1,44 +1,42 @@
-import { useEffect, useState } from "react";
-import { fetchUsers } from "@/utils/api";
+import type { Metadata } from "next";
+import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
+import React from "react";
+import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
+import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
+import StatisticsChart from "@/components/ecommerce/StatisticsChart";
+import RecentOrders from "@/components/ecommerce/RecentOrders";
+import DemographicCard from "@/components/ecommerce/DemographicCard";
 
-export default function UsersPage() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+export const metadata: Metadata = {
+  title:
+    "Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template",
+  description: "This is Next.js Home for TailAdmin Dashboard Template",
+};
 
-  useEffect(() => {
-    fetchUsers()
-      .then(setUsers)
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-
+export default function Ecommerce() {
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Users</h1>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                <th className="py-3 px-6 text-left">ID</th>
-                <th className="py-3 px-6 text-left">Name</th>
-                <th className="py-3 px-6 text-left">Email</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-600 text-sm">
-              {users.map((user) => (
-                <tr key={user.id} className="border-b border-gray-200 hover:bg-gray-100">
-                  <td className="py-3 px-6 text-left">{user.id}</td>
-                  <td className="py-3 px-6 text-left">{user.name}</td>
-                  <td className="py-3 px-6 text-left">{user.email}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+    <div className="grid grid-cols-12 gap-4 md:gap-6">
+      <div className="col-span-12 space-y-6 xl:col-span-7">
+        <EcommerceMetrics />
+
+        <MonthlySalesChart />
+      </div>
+
+      <div className="col-span-12 xl:col-span-5">
+        <MonthlyTarget />
+      </div>
+
+      <div className="col-span-12">
+        <StatisticsChart />
+      </div>
+
+      <div className="col-span-12 xl:col-span-5">
+        <DemographicCard />
+      </div>
+
+      <div className="col-span-12 xl:col-span-7">
+        <RecentOrders />
+      </div>
     </div>
   );
 }
