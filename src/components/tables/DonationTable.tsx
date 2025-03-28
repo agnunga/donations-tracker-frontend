@@ -17,11 +17,11 @@ type Donation = {
   donationDate: string;
 }
 
-interface DonationTableProps {
+interface DonationsTableProps {
   donations: Donation[];
   }
 
-  export default function DonationTable({ donations }: DonationTableProps) {
+  export default function DonationTable({ donations }: DonationsTableProps) {
     return (
     <div className="p-6">
       {/* Page Header */}

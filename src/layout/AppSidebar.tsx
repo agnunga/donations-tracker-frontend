@@ -33,6 +33,7 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "Donations", path: "/", pro: false },
       { name: "List Donations", path: "/donations", pro: false },
+      { name: "List Beneficiaries", path: "/beneficiaries", pro: false },
     ],
   },
   {

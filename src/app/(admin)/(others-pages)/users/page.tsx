@@ -2,7 +2,7 @@
 
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import UserTable from "@/components/users/UserTable";
+import UserTable from "@/components/tables/UserTable";
 import { fetchUsers } from "@/utils/api";
 import { useEffect, useState } from "react";
 

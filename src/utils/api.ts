@@ -9,3 +9,10 @@ export async function fetchUsers() {
     if (!res.ok) throw new Error("Failed to fetch donations");
     return res.json();
   }
+  
+  export async function fetchBeneficiaries() {
+    const res = await fetch("http://localhost:9090/api/beneficiaries");
+    if (!res.ok) throw new Error("Failed to fetch beneficiaries");
+    return res.json();
+  }
+  
