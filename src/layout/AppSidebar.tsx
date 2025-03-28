@@ -49,7 +49,6 @@ const othersItems: NavItem[] = [
     subItems: [
       { name: "Beneficiaries Reports", path: "/line-chart", pro: false },
       { name: "Expenditure Reports", path: "/bar-chart", pro: false },
-      { name: "Projects Reports", path: "/bar-chart", pro: false },
     ],
   },
 ];

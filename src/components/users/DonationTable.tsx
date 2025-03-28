@@ -10,20 +10,18 @@ import Badge from "../ui/badge/Badge";
 import AppHeader from "@/layout/AppHeader";
 
 // Define User interface
-type User = {
+type Donation = {
   id: number;
-  fullname: string;
-  username: string;
-  email: string;
-  avatar: string;
-  status: "Active" | "Pending" | "Inactive";
+  amount: number;
+  donorName: string;
+  donationDate: string;
 }
 
-interface UserTableProps {
-    users: User[];
+interface DonationTableProps {
+  donations: Donation[];
   }
 
-  export default function UserTable({ users }: UserTableProps) {
+  export default function DonationTable({ donations }: DonationTableProps) {
     return (
     <div className="p-6">
       {/* Page Header */}
@@ -38,69 +36,36 @@ interface UserTableProps {
               <TableHeader className="bg-gray-50 dark:bg-gray-800 border-b border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
                   <TableCell className="px-5 py-3 font-semibold text-gray-600 text-start text-sm dark:text-gray-300">
-                  Full Name
+                    Donor Name
+                  </TableCell>
+                  
+                  <TableCell className="px-5 py-3 font-semibold text-gray-600 text-start text-sm dark:text-gray-300">
+                    Amount
                   </TableCell>
                   <TableCell className="px-5 py-3 font-semibold text-gray-600 text-start text-sm dark:text-gray-300">
-                    Username
-                  </TableCell>
-                  <TableCell className="px-5 py-3 font-semibold text-gray-600 text-start text-sm dark:text-gray-300">
-                    Email
-                  </TableCell>
-                  <TableCell className="px-5 py-3 font-semibold text-gray-600 text-start text-sm dark:text-gray-300">
-                    Status
+                    Date
                   </TableCell>
                 </TableRow>
               </TableHeader>
 
               {/* Table Body */}
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                {users.length > 0 ? (
-                  users.map((user) => (
-                    <TableRow key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                {donations.length > 0 ? (
+                  donations.map((donation) => (
+                    <TableRow key={donation.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
                       <TableCell className="px-5 py-4 sm:px-6 text-start flex items-center gap-3">
-                        <div className="w-10 h-10 overflow-hidden rounded-full border border-gray-300">
-                          {user.avatar ? (
-                            <Image
-                              width={40}
-                              height={40}
-                              src={user.avatar}
-                              alt={user.fullname}
-                              className="object-cover"
-                            />
-                          ) : (
-                            <Image
-                              width={40}
-                              height={40}
-                              src="/default-avatar.png" // Replace with an actual default avatar path
-                              alt="Default Avatar"
-                              className="object-cover"
-                            />
-                          )}
-                        </div>
                         <span className="block font-medium text-gray-800 dark:text-white">
-                          {user.fullname}
+                          {donation.donorName}
                         </span>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-gray-600 text-start text-sm dark:text-gray-400">
-                        {user.username}
+                        {donation.amount}
                       </TableCell>
+                      
                       <TableCell className="px-4 py-3 text-gray-600 text-start text-sm dark:text-gray-400">
-                        {user.email}
+                        {donation.donationDate}
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-gray-600 text-start text-sm dark:text-gray-400">
-                        <Badge
-                          size="sm"
-                          color={
-                            user.status === "Active"
-                              ? "success"
-                              : user.status === "Pending"
-                              ? "warning"
-                              : "error"
-                          }
-                        >
-                          {user.status}
-                        </Badge>
-                      </TableCell>
+
                     </TableRow>
                   ))
                 ) : (

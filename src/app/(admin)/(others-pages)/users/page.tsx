@@ -21,7 +21,7 @@ export default function UsersPage() {
     <div>
       <PageBreadcrumb pageTitle="Users" />
       <div className="space-y-6">
-        <ComponentCard title="User Table">
+        <ComponentCard title="All Users">
           {loading ? <p>Loading...</p> : <UserTable users={users} />}
         </ComponentCard>
       </div>

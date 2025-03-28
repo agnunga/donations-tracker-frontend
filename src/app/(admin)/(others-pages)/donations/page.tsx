@@ -2,27 +2,28 @@
 
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+import DonationTable from "@/components/users/DonationTable";
 import UserTable from "@/components/users/UserTable";
-import { fetchUsers } from "@/utils/api";
+import { fetchDonations } from "@/utils/api";
 import { useEffect, useState } from "react";
 
-export default function UsersPage() {
-  const [users, setUsers] = useState<any[]>([]);
+export default function DonationsPage() {
+  const [donations, setDonations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUsers()
-      .then(setUsers)
+    fetchDonations()
+      .then(setDonations)
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
   return (
     <div>
-      <PageBreadcrumb pageTitle="Users" />
+      <PageBreadcrumb pageTitle="Donations" />
       <div className="space-y-6">
-        <ComponentCard title="User Table">
-          {loading ? <p>Loading...</p> : <UserTable users={users} />}
+        <ComponentCard title="All Donations">
+          {loading ? <p>Loading...</p> : <DonationTable donations={donations} />}
         </ComponentCard>
       </div>
     </div>
