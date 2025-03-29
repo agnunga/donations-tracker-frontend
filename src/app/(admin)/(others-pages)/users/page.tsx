@@ -17,12 +17,22 @@ export default function UsersPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const loadUsers = async () => {
+    try {
+      const response = await fetch("http://localhost:9090/api/users");
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   return (
     <div>
       <PageBreadcrumb pageTitle="Users" />
 
       <ComponentCard title="All Users">
-        {loading ? <p>Loading...</p> : <UserTable users={users} />}
+        {loading ? <p>Loading...</p> : <UserTable users={users} loadUsers={loadUsers} />}
       </ComponentCard>
     </div>
   );

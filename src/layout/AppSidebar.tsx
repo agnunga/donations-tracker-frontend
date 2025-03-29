@@ -8,6 +8,7 @@ import {
   BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
+  GroupIcon,
   GridIcon,
   HorizontaLDots,
   ListIcon,
@@ -37,7 +38,7 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    icon: <GridIcon />,
+    icon: <GroupIcon />,
     name: "Users",
     subItems: [{ name: "List Users", path: "/users", pro: false }],
   }

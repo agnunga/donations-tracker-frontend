@@ -19,10 +19,11 @@ interface UserFormData {
 
 interface CreateUserFormProps {
   closeModal: () => void;
+  loadUsers: () => void; // Add this
   user?: UserFormData | null; // Accepts an optional user object
 }
 
-export default function CreateUserForm({ closeModal, user }: CreateUserFormProps) {
+export default function CreateUserForm({ closeModal, user, loadUsers }: CreateUserFormProps) {
   const [formData, setFormData] = useState<UserFormData>({
     id: "",
     username: "",
@@ -65,6 +66,7 @@ export default function CreateUserForm({ closeModal, user }: CreateUserFormProps
     try {
         // console.log("When submitting create, update user:", formData);
         const method = user ? "PUT" : "POST"; // Update if user exists
+        
         const url = user ? `http://localhost:9090/api/users/${user.id}` : "http://localhost:9090/api/users";
 
         const response = await fetch(url, {
@@ -77,6 +79,7 @@ export default function CreateUserForm({ closeModal, user }: CreateUserFormProps
 
       setSuccess(user ? "User updated successfully!" : "User created successfully!");
 
+      loadUsers();
       closeModal(); // Close modal on success
     } catch (err) {
       setError((err as Error).message);

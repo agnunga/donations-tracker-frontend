@@ -28,9 +28,10 @@ type User = {
 
 interface UserTableProps {
     users: User[];
+    loadUsers : () => void; // This reloads users
   }
 
-  export default function UserTable({ users }: UserTableProps) {
+  export default function UserTable({ users, loadUsers }: UserTableProps) {
 
       const [loading, setLoading] = useState(true);
 
@@ -54,6 +55,7 @@ interface UserTableProps {
             deleteUser(userId);
             alert("User deleted successfully!");
             // Refresh users list after deletion
+            loadUsers();
           } catch (error) {
             console.error("Error deleting user:", error);
           }
@@ -77,7 +79,7 @@ interface UserTableProps {
       </button>
 
       <Modal isOpen={isOpen} onClose={handleCloseModal} className="max-w-[700px] p-6 lg:p-10">
-        <CreateUserForm closeModal={closeModal} user={selectedUser} />
+        <CreateUserForm closeModal={closeModal} user={selectedUser} loadUsers={loadUsers} />
       </Modal>
 
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] shadow-md">
