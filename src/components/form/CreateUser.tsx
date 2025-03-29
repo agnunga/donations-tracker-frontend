@@ -8,7 +8,7 @@ import Select from "@/components/form/Select";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 
 interface UserFormData {
-  id: string;
+  id: number;
   username: string;
   password?: string;
   fullname: string;
@@ -25,7 +25,7 @@ interface CreateUserFormProps {
 
 export default function CreateUserForm({ closeModal, user, loadUsers }: CreateUserFormProps) {
   const [formData, setFormData] = useState<UserFormData>({
-    id: "",
+    id: 0,
     username: "",
     password: "",
     fullname: "",

@@ -17,7 +17,7 @@ import { useModal } from "@/hooks/useModal";
 
 // Define User interface
 type User = {
-  id: string;
+  id: number;
   fullname: string;
   username: string;
   email: string;
@@ -49,11 +49,17 @@ interface UserTableProps {
         openModal();
       };
       
-      const handleDelete = async (userId: string) => {
+      const handleDelete = async (userId: number) => {
+        
+        if (!userId || typeof userId !== "number") {
+          alert("Invalid user ID.");
+          return;
+        }
+
         if (confirm("Are you sure you want to delete this user?")) {
           try {
-            deleteUser(userId);
-            alert("User deleted successfully!");
+            const response = await deleteUser(userId);
+            alert(response?.message );
             // Refresh users list after deletion
             loadUsers();
           } catch (error) {
