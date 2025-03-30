@@ -43,10 +43,10 @@ interface BeneficiariesTableProps {
                     Contact Info
                   </TableCell>
                   <TableCell className="px-5 py-3 font-semibold text-gray-600 text-start text-sm dark:text-gray-300">
-                    Amount
+                    Needs
                   </TableCell>
                   <TableCell className="px-5 py-3 font-semibold text-gray-600 text-start text-sm dark:text-gray-300">
-                    Needs
+                  Amount
                   </TableCell>
                 </TableRow>
               </TableHeader>

@@ -14,6 +14,7 @@ import { Modal } from "@/components/ui/modal";
 import CreateUserForm from "@/components/form/CreateUser";
 import { useState, useEffect } from "react";
 import { useModal } from "@/hooks/useModal";
+import Pagination from "./Pagination";
 
 // Define User interface
 type User = {
@@ -37,6 +38,15 @@ interface UserTableProps {
 
       const [selectedUser, setSelectedUser] = useState<User | null>(null);
       const { isOpen, openModal, closeModal } = useModal();
+
+      //Pagination 
+      const [currentPage, setCurrentPage] = useState(1);
+      const usersPerPage = 5; // Adjust as needed
+      const totalPages = Math.ceil(users.length / usersPerPage);
+      const paginatedUsers = users.slice(
+        (currentPage - 1) * usersPerPage,
+        currentPage * usersPerPage
+      );
 
       const handleAddUser = () => {
         setSelectedUser(null); // Clear user state for adding a new user
@@ -115,8 +125,8 @@ interface UserTableProps {
 
               {/* Table Body */}
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                {users.length > 0 ? (
-                  users.map((user) => (
+                {paginatedUsers.length > 0 ? (
+                  paginatedUsers.map((user) => (
                     <TableRow key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
                       <TableCell className="px-5 py-4 sm:px-6 text-start flex items-center gap-3">
                         <div className="w-10 h-10 overflow-hidden rounded-full border border-gray-300">
@@ -193,6 +203,13 @@ interface UserTableProps {
                 )}
               </TableBody>
             </Table>
+            <div className="flex w-full justify-end mt-6 mb-4 px-6">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
           </div>
         </div>
       </div>
