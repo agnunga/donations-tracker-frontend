@@ -15,7 +15,8 @@ type Beneficiary = {
   name: string;
   contactInfo: string;
   needs: string;
-  amount: number;
+  totalAmount: number;
+  disbursedAmount: number;
 }
 
 interface BeneficiariesTableProps {
@@ -46,7 +47,10 @@ interface BeneficiariesTableProps {
                     Needs
                   </TableCell>
                   <TableCell className="px-5 py-3 font-semibold text-gray-600 text-start text-sm dark:text-gray-300">
-                  Amount
+                  Total Amount
+                  </TableCell>
+                  <TableCell className="px-5 py-3 font-semibold text-gray-600 text-start text-sm dark:text-gray-300">
+                  Disbursed Amount
                   </TableCell>
                 </TableRow>
               </TableHeader>
@@ -56,10 +60,8 @@ interface BeneficiariesTableProps {
                 {beneficiaries.length > 0 ? (
                   beneficiaries.map((beneficiary) => (
                     <TableRow key={beneficiary.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                      <TableCell className="px-5 py-4 sm:px-6 text-start flex items-center gap-3">
-                        <span className="block font-medium text-gray-800 dark:text-white">
-                          {beneficiary.name}
-                        </span>
+                      <TableCell className="px-4 py-3 sm:px-6 text-start  text-sm flex items-center gap-3">
+                        {beneficiary.name}
                       </TableCell>
                       <TableCell className="px-4 py-3 text-gray-600 text-start text-sm dark:text-gray-400">
                         {beneficiary.contactInfo}
@@ -68,7 +70,10 @@ interface BeneficiariesTableProps {
                         {beneficiary.needs}
                       </TableCell>
                       <TableCell className="px-4 py-3 text-gray-600 text-start text-sm dark:text-gray-400">
-                        {beneficiary.amount}
+                        {beneficiary.totalAmount}
+                      </TableCell>
+                      <TableCell className="px-4 py-3 text-gray-600 text-start text-sm dark:text-gray-400">
+                        {beneficiary.disbursedAmount}
                       </TableCell>
                     </TableRow>
                   ))
