@@ -4,6 +4,8 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import Cookies from 'js-cookie';
+import { redirect } from "next/navigation";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +18,14 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  function handleSignOut() {
+    // console.log('Before removal:', Cookies.get('token'));
+    Cookies.remove('token', { path: '/' });
+    // console.log('After removal:', Cookies.get('token'));
+    redirect('/signin'); // Redirect to the signinpage
+  }
+
   return (
     <div className="relative">
       <button
@@ -145,7 +155,8 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
           </li>
         </ul>
         <Link
-          href="/signin"
+          href="#"
+          onClick={handleSignOut}
           className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
           <svg

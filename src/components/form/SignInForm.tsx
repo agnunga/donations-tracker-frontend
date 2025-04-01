@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import Alert from "../ui/alert/Alert";
+import Cookies from 'js-cookie';
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,41 +27,43 @@ export default function SignInForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError("");
 
-    console.log("Login formData ::: ", formData)
+  console.log("Login formData ::: ", formData);
 
-    try {
-      const res = await fetch("http://localhost:9090/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+  try {
+    const res = await fetch("http://localhost:9090/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
-        const { error } = data;
-        throw new Error(error || "Login failed");
-      }
-      
-      const { token } = data;
-      localStorage.setItem("token", token);
-
-      console.log("Login token ::: ", token);
-      router.push("/"); // Redirect after login
-    } catch (err: any) {
-      setError(err.message); 
-      setShowAlert(true); // Show alert
-      // Auto-hide the alert after 3 seconds
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 6000);
-
+    if (!res.ok) {
+      const { error } = data;
+      throw new Error(error || "Login failed");
     }
-  };
+
+    const { token } = data;
+
+    // Set token in cookies instead of localStorage
+    Cookies.set("token", token, { expires: 7, path: "" }); // Expires in 7 days
+
+    console.log("Login token ::: ", token);
+    router.push("/"); // Redirect after login
+  } catch (err: any) {
+    setError(err.message);
+    setShowAlert(true); // Show alert
+    // Auto-hide the alert after 3 seconds
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 6000);
+  }
+};
+
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">

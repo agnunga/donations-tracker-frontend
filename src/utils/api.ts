@@ -1,7 +1,17 @@
+import { fetchWithAuth } from "./auth";
+
 export async function fetchUsers() {
-  const res = await fetch("http://localhost:9090/api/users");
-  if (!res.ok) throw new Error("Failed to fetch users");
-  return res.json();
+  const url = "http://localhost:9090/api/users";
+
+  console.log("Inside fetchUsers ", url);
+
+  const res = await fetchWithAuth(url);
+  // const res = await fetch(url);
+
+  //const data = res.json();
+  console.log("Inside fetchUsers ", res);
+  //if (!res.ok) throw new Error("Failed to fetch users");
+  return res;
 }
 
 export async function deleteUser(userId: number) {
@@ -13,6 +23,7 @@ export async function deleteUser(userId: number) {
 
   const res = await fetch(`http://localhost:9090/api/users/${userId}`, {
     method: "DELETE",
+    
   });
 
   if (!res.ok) {
