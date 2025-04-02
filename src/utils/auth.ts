@@ -1,12 +1,23 @@
 import Cookies from 'js-cookie';
 import axios from 'axios';
+// import { cookies } from 'next/headers';
 
 const API_URL = "http://localhost:9090/api/";
 
-// Check if the user is logged in by checking the cookie
-export function isLoggedIn() {
-  return !!Cookies.get("token"); // Check if token exists in cookies
-}
+// export async function isAuthenticated() {
+//   const cookieStore = await cookies();
+//   const token = cookieStore.get('token');
+//   return !!token;
+// }
+
+// // Check if the user is logged in by checking the cookie
+// export function isLoggedIn() {
+//   return !!Cookies.get("token"); // Check if token exists in cookies
+// }
+
+// export function isNotLoggedIn() {
+//   return !isLoggedIn(); // Returns true if the user is not logged in
+// }
 
 // Log out the user by removing the token from the cookie and redirecting to the login page
 export function logout() {

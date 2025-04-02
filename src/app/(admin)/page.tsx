@@ -6,7 +6,7 @@ import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
 import StatisticsChart from "@/components/ecommerce/StatisticsChart";
 import RecentOrders from "@/components/ecommerce/RecentOrders";
 import DemographicCard from "@/components/ecommerce/DemographicCard";
-import { isLoggedIn } from "@/utils/auth";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
@@ -15,10 +15,13 @@ export const metadata: Metadata = {
   description: "This is Next.js Home for TailAdmin Dashboard Template",
 };
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
 
-  if(!!isLoggedIn()){
-    redirect("/signin")
+  if (!token) {
+    redirect("/signin");
   }
 
   return (
