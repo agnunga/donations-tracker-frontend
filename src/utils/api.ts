@@ -4,14 +4,16 @@ export async function fetchUsers() {
   const url = "http://localhost:9090/api/users";
 
   console.log("Inside fetchUsers ", url);
-
-  const res = await fetchWithAuth(url);
-  // const res = await fetch(url);
-
-  //const data = res.json();
-  console.log("Inside fetchUsers ", res);
-  //if (!res.ok) throw new Error("Failed to fetch users");
-  return res;
+  try{
+    const res = await fetchWithAuth(url);
+    // const res = await fetch(url);
+    //const data = res.json();
+    console.log("Inside fetchUsers ", res);
+    //if (!res.ok) throw new Error("Failed to fetch users");
+    return res;
+  }catch{
+    throw new Error("Error encountered. Contact Support.");
+  }
 }
 
 export async function deleteUser(userId: number) {
