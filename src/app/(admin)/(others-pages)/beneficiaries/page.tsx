@@ -6,8 +6,19 @@ import BeneficiariesTable from "@/components/tables/BeneficiariesTable";
 import { fetchBeneficiaries } from "@/utils/api";
 import { useEffect, useState } from "react";
 
+
+// Define User interface
+type Beneficiary = {
+  id: number;
+  name: string;
+  contactInfo: string;
+  needs: string;
+  totalAmount: number;
+  disbursedAmount: number;
+}
+
 export default function BeneficiariesPage() {
-  const [beneficiaries, setBeneficiaries] = useState<any[]>([]);
+  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

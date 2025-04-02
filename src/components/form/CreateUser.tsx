@@ -6,6 +6,8 @@ import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import Select from "@/components/form/Select";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
+import axios from "axios";
+import { getAuthHeader } from "@/utils/auth";
 
 interface UserFormData {
   id: number;
@@ -64,28 +66,35 @@ export default function CreateUserForm({ closeModal, user, loadUsers }: CreateUs
     setSuccess("");
 
     try {
-        // console.log("When submitting create, update user:", formData);
-        const method = user ? "PUT" : "POST"; // Update if user exists
-        
-        const url = user ? `http://localhost:9090/api/users/${user.id}` : "http://localhost:9090/api/users";
-
-        const response = await fetch(url, {
+      const method = user ? 'put' : 'post'; // Use lowercase methods for Axios
+      const url = user
+        ? `http://localhost:9090/api/users/${user.id}`
+        : 'http://localhost:9090/api/users';
+    
+      const response = await axios({
         method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, role: formData.role }),
+        url,
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        data: { ...formData, role: formData.role },
       });
-
-      if (!response.ok) throw new Error(user ? "Failed to update user" : "Failed to create user");
-
-      setSuccess(user ? "User updated successfully!" : "User created successfully!");
-
+    
+      if (response.status !== 200) {
+        throw new Error(user ? 'Failed to update user' : 'Failed to create user');
+      }
+    
+      setSuccess(user ? 'User updated successfully!' : 'User created successfully!');
       loadUsers();
       closeModal(); // Close modal on success
-    } catch (err) {
-      setError((err as Error).message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error('An unknown error occurred');
+      }
     } finally {
       setLoading(false);
     }
+
   };
 
   return (

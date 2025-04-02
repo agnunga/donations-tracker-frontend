@@ -3,12 +3,19 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import DonationTable from "@/components/tables/DonationTable";
-import UserTable from "@/components/tables/UserTable";
 import { fetchDonations } from "@/utils/api";
 import { useEffect, useState } from "react";
 
+// Define User interface
+type Donation = {
+  id: number;
+  amount: number;
+  donorName: string;
+  donationDate: string;
+}
+
 export default function DonationsPage() {
-  const [donations, setDonations] = useState<any[]>([]);
+  const [donations, setDonations] = useState<Donation[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

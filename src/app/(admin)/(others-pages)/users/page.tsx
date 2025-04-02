@@ -6,8 +6,19 @@ import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import UserTable from "@/components/tables/UserTable";
 import { fetchUsers } from "@/utils/api";
 
+// Define User interface
+type User = {
+  id: number;
+  fullname: string;
+  username: string;
+  email: string;
+  avatar: string;
+  status: string;
+  role: string;
+}
+
 export default function UsersPage() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,9 +31,8 @@ export default function UsersPage() {
   const loadUsers = async () => {
     try {
       //const response = await fetch("http://localhost:9090/api/users");
-      const response = await fetchUsers()
-      const data = await response.json();
-      setUsers(data);
+      const response = await fetchUsers();
+      setUsers(response);
     } catch (error) {
       console.error("Error fetching users:", error);
     }

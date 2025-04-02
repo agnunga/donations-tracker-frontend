@@ -1,4 +1,3 @@
-import Image from "next/image";
 import {
   Table,
   TableBody,
@@ -6,8 +5,6 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import Badge from "../ui/badge/Badge";
-import AppHeader from "@/layout/AppHeader";
 
 // Define User interface
 type Beneficiary = {

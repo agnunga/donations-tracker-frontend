@@ -6,7 +6,7 @@ import Button from "@/components/ui/button/Button";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { FormEvent, useState } from "react";
+import React, { useState } from "react";
 import Alert from "../ui/alert/Alert";
 import Cookies from 'js-cookie';
 
@@ -54,8 +54,12 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     console.log("Login token ::: ", token);
     router.push("/"); // Redirect after login
-  } catch (err: any) {
-    setError(err.message);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error('An unknown error occurred');
+    }
     setShowAlert(true); // Show alert
     // Auto-hide the alert after 3 seconds
     setTimeout(() => {

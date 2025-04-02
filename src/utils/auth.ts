@@ -1,8 +1,8 @@
 import Cookies from 'js-cookie';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 // import { cookies } from 'next/headers';
 
-const API_URL = "http://localhost:9090/api/";
+// const API_URL = "http://localhost:9090/api/";
 
 // export async function isAuthenticated() {
 //   const cookieStore = await cookies();
@@ -26,13 +26,12 @@ export function logout() {
 }
 
 // Fetch with Authorization header, using the token from cookies
-export async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
-  const token = Cookies.get("token"); // Retrieve token from cookies
+export async function fetchWithAuth<T>(url: string, options: AxiosRequestConfig = {}): Promise<T> {
+  const token = Cookies.get("token");
   if (!token) {
     throw new Error('No authentication token found');
   }
-  // console.log("getAuthHeader()::: ", getAuthHeader());
-  const response =  await axios.get(`${url}`, { headers: getAuthHeader() });
+  const response = await axios.get<T>(url, { headers: getAuthHeader(), ...options });
   return response.data;
 }
 

@@ -7,12 +7,11 @@ import {
   TableRow,
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
-import AppHeader from "@/layout/AppHeader";
 import { deleteUser } from "@/utils/api";
 
 import { Modal } from "@/components/ui/modal";
 import CreateUserForm from "@/components/form/CreateUser";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useModal } from "@/hooks/useModal";
 import Pagination from "./Pagination";
 
@@ -34,7 +33,7 @@ interface UserTableProps {
 
   export default function UserTable({ users, loadUsers }: UserTableProps) {
 
-      const [loading, setLoading] = useState(true);
+      // const [loading, setLoading] = useState(true);
 
       const [selectedUser, setSelectedUser] = useState<User | null>(null);
       const { isOpen, openModal, closeModal } = useModal();
@@ -53,7 +52,7 @@ interface UserTableProps {
         openModal();
       };
 
-      const handleEdit = (user: any) => {
+      const handleEdit = (user: User) => {
         console.log("Editing user:", user);
         setSelectedUser(user);
         openModal();
@@ -142,7 +141,7 @@ interface UserTableProps {
                             <Image
                               width={40}
                               height={40}
-                              src="/default-avatar.png" // Replace with an actual default avatar path
+                              src="/images/user/default_user3.jpg" // Replace with an actual default avatar path
                               alt="Default Avatar"
                               className="object-cover"
                             />

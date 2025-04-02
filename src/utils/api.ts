@@ -1,17 +1,23 @@
-import { fetchWithAuth } from "./auth";
+import axios from "axios";
+import { fetchWithAuth, getAuthHeader } from "./auth";
 
-export async function fetchUsers() {
+type User = {
+  id: number;
+  fullname: string;
+  username: string;
+  email: string;
+  avatar: string;
+  status: string;
+  role: string;
+}
+
+export async function fetchUsers(): Promise<User[]> {
   const url = "http://localhost:9090/api/users";
-
-  console.log("Inside fetchUsers ", url);
-  try{
-    const res = await fetchWithAuth(url);
-    // const res = await fetch(url);
-    //const data = res.json();
-    console.log("Inside fetchUsers ", res);
-    //if (!res.ok) throw new Error("Failed to fetch users");
-    return res;
-  }catch{
+  try {
+    const users = await fetchWithAuth<User[]>(url);
+    return users;
+  } catch (error) {
+    console.error("Error encountered:", error);
     throw new Error("Error encountered. Contact Support.");
   }
 }
@@ -23,25 +29,22 @@ export async function deleteUser(userId: number) {
 
   console.log("Deleting user with ID:", userId); // Debugging log
 
-  const res = await fetch(`http://localhost:9090/api/users/${userId}`, {
-    method: "DELETE",
-    
-  });
-
-  if (!res.ok) {
-    const errorText = await res.text(); // Capture server response
-    console.log("Failed", errorText)
-    return { message: "User deletion failed, contact support!" };
+  try {
+    const response = await axios.delete(`http://localhost:9090/api/users/${userId}`, { headers: getAuthHeader() });
+  
+    // Axios automatically throws an error for non-2xx responses, so no need to check response.ok
+  
+    // Check if response has data before parsing JSON
+    if (response.data) {
+      return response.data;
+    } else {
+      return { message: "User deleted successfully!" }; // Return a success message
+    }
+  } catch {
+      return { message: "An unexpected error occurred." };
+    }
   }
 
-  // Check if response has a body before parsing JSON
-  const contentType = res.headers.get("content-type");
-  if (contentType && contentType.includes("application/json")) {
-    return await res.json();
-  } else {
-    return { message: "User deleted successfully!" }; // Return a success message
-  }
-}
   
   export async function fetchDonations() {
     const res = await fetch("http://localhost:9090/api/donations");
