@@ -10,6 +10,10 @@ import React, { useState } from "react";
 import Alert from "../ui/alert/Alert";
 import Cookies from 'js-cookie';
 
+
+// const API_URL = "http://localhost:9090/auth/";
+const API_URL = "https://1be0-105-160-20-66.ngrok-free.app/auth/";
+
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -27,16 +31,16 @@ export default function SignInForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
 
   console.log("Login formData ::: ", formData);
 
   try {
-    const res = await fetch("http://localhost:9090/auth/login", {
+    const res = await fetch(`${ API_URL }login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
       body: JSON.stringify(formData),
     });
 

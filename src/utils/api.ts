@@ -1,5 +1,6 @@
-import axios from "axios";
-import { fetchWithAuth, getAuthHeader } from "./auth";
+import axios, { AxiosRequestConfig } from "axios";
+import { getAuthHeader } from "./auth";
+import Cookies from 'js-cookie';
 
 type User = {
   id: number;
@@ -11,8 +12,20 @@ type User = {
   role: string;
 }
 
+type Beneficiary = {
+  id: number;
+  name: string;
+  contactInfo: string;
+  needs: string;
+  totalAmount: number;
+  disbursedAmount: number;
+}
+
+// const API_URL = "http://localhost:9090/api/";
+const API_URL = "https://1be0-105-160-20-66.ngrok-free.app/api/";
+
 export async function fetchUsers(): Promise<User[]> {
-  const url = "http://localhost:9090/api/users";
+  const url = `${ API_URL }users`;
   try {
     const users = await fetchWithAuth<User[]>(url);
     return users;
@@ -22,6 +35,18 @@ export async function fetchUsers(): Promise<User[]> {
   }
 }
 
+
+// Fetch with Authorization header, using the token from cookies
+export async function fetchWithAuth<T>(url: string, options: AxiosRequestConfig = {}): Promise<T> {
+  const token = Cookies.get("token");
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+  const response = await axios.get<T>(url, { headers: getAuthHeader(), ...options });
+  return response.data;
+}
+
+
 export async function deleteUser(userId: number) {
   if (!userId || typeof userId !== "number") {
     throw new Error("Invalid user ID format");
@@ -30,7 +55,7 @@ export async function deleteUser(userId: number) {
   console.log("Deleting user with ID:", userId); // Debugging log
 
   try {
-    const response = await axios.delete(`http://localhost:9090/api/users/${userId}`, { headers: getAuthHeader() });
+    const response = await axios.delete(`${ API_URL }users/${userId}`, { headers: getAuthHeader() });
   
     // Axios automatically throws an error for non-2xx responses, so no need to check response.ok
   
@@ -47,14 +72,28 @@ export async function deleteUser(userId: number) {
 
   
   export async function fetchDonations() {
-    const res = await fetch("http://localhost:9090/api/donations");
+    const res = await fetch(`${ API_URL }donations`, { headers: {
+      'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true'
+      }
+    });
     if (!res.ok) throw new Error("Failed to fetch donations");
     return res.json();
   }
   
-  export async function fetchBeneficiaries() {
-    const res = await fetch("http://localhost:9090/api/beneficiaries");
-    if (!res.ok) throw new Error("Failed to fetch beneficiaries");
-    return res.json();
+  export async function fetchBeneficiaries(): Promise<Beneficiary[]> {
+    const url = `${ API_URL }beneficiaries`;
+    try{
+      const response = await axios.get<Beneficiary[]>(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error encountered:", error);
+      throw new Error("Error encountered. Contact Support.");
+    }
   }
   

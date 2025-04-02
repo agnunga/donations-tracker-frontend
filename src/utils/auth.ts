@@ -1,14 +1,4 @@
 import Cookies from 'js-cookie';
-import axios, { AxiosRequestConfig } from 'axios';
-// import { cookies } from 'next/headers';
-
-// const API_URL = "http://localhost:9090/api/";
-
-// export async function isAuthenticated() {
-//   const cookieStore = await cookies();
-//   const token = cookieStore.get('token');
-//   return !!token;
-// }
 
 // // Check if the user is logged in by checking the cookie
 // export function isLoggedIn() {
@@ -25,18 +15,9 @@ export function logout() {
   window.location.href = "/signin"; // Redirect to login
 }
 
-// Fetch with Authorization header, using the token from cookies
-export async function fetchWithAuth<T>(url: string, options: AxiosRequestConfig = {}): Promise<T> {
-  const token = Cookies.get("token");
-  if (!token) {
-    throw new Error('No authentication token found');
-  }
-  const response = await axios.get<T>(url, { headers: getAuthHeader(), ...options });
-  return response.data;
-}
-
 // Get Auth Header (for protected requests)
 export const getAuthHeader = () => {
   const token = Cookies.get("token");
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  return token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true' } : {};
 };

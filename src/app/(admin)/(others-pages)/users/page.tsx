@@ -30,7 +30,6 @@ export default function UsersPage() {
 
   const loadUsers = async () => {
     try {
-      //const response = await fetch("http://localhost:9090/api/users");
       const response = await fetchUsers();
       setUsers(response);
     } catch (error) {

@@ -25,6 +25,9 @@ interface CreateUserFormProps {
   user?: UserFormData | null; // Accepts an optional user object
 }
 
+// const API_URL = "http://localhost:9090/api/";
+const API_URL = "https://040f-105-160-20-66.ngrok-free.app/api/";
+
 export default function CreateUserForm({ closeModal, user, loadUsers }: CreateUserFormProps) {
   const [formData, setFormData] = useState<UserFormData>({
     id: 0,
@@ -68,8 +71,8 @@ export default function CreateUserForm({ closeModal, user, loadUsers }: CreateUs
     try {
       const method = user ? 'put' : 'post'; // Use lowercase methods for Axios
       const url = user
-        ? `http://localhost:9090/api/users/${user.id}`
-        : 'http://localhost:9090/api/users';
+        ? `${ API_URL }users/${user.id}`
+        : `${ API_URL }users`;
     
       const response = await axios({
         method,
