@@ -113,22 +113,7 @@ export default function CreateDonorForm({ closeModal, user, loadUsers }: CreateD
           <Label>Email</Label>
           <Input type="email" name="email" defaultValue={formData.email} onChange={handleChange} />
         </div>
-        {!user && ( // Show password field only for new users
-          <div>
-            <Label>Password</Label>
-            <div className="relative">
-              <Input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                defaultValue={formData.password}
-                onChange={handleChange}
-              />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2">
-                {showPassword ? <EyeIcon /> : <EyeCloseIcon />}
-              </button>
-            </div>
-          </div>
-        )}
+        
         <div>
           <Label>Status</Label>
           <Select
@@ -154,7 +139,7 @@ export default function CreateDonorForm({ closeModal, user, loadUsers }: CreateD
             Cancel
           </button>
           <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded" disabled={loading}>
-            {loading ? (user ? "Updating..." : "Creating...") : user ? "Update User" : "Create User"}
+            {loading ? (user ? "Updating..." : "Creating...") : user ? "Update Donor" : "Create Donor"}
           </button>
         </div>
       </form>
