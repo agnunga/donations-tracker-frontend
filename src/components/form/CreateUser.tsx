@@ -25,8 +25,9 @@ interface CreateUserFormProps {
   user?: UserFormData | null; // Accepts an optional user object
 }
 
-// const API_URL = "http://localhost:9090/api/";
-const API_URL = "https://040f-105-160-20-66.ngrok-free.app/api/";
+// const baseUrl = process.env.NEXT_LOCAL_BASE_URL;
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const API_URL = `${ baseUrl }/api/`;
 
 export default function CreateUserForm({ closeModal, user, loadUsers }: CreateUserFormProps) {
   const [formData, setFormData] = useState<UserFormData>({

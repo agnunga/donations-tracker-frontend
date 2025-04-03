@@ -21,8 +21,9 @@ type Beneficiary = {
   disbursedAmount: number;
 }
 
-// const API_URL = "http://localhost:9090/api/";
-const API_URL = "https://1be0-105-160-20-66.ngrok-free.app/api/";
+// const baseUrl = process.env.NEXT_LOCAL_BASE_URL;
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const API_URL = `${ baseUrl }/api/`;
 
 export async function fetchUsers(): Promise<User[]> {
   const url = `${ API_URL }users`;
@@ -42,7 +43,7 @@ export async function fetchWithAuth<T>(url: string, options: AxiosRequestConfig 
   if (!token) {
     throw new Error('No authentication token found');
   }
-  const response = await axios.get<T>(url, { headers: getAuthHeader(), ...options });
+  const response = await axios.get<T>(url, { headers: getAuthHeader(),  ...options });
   return response.data;
 }
 
@@ -72,9 +73,10 @@ export async function deleteUser(userId: number) {
 
   
   export async function fetchDonations() {
-    const res = await fetch(`${ API_URL }donations`, { headers: {
-      'Content-Type': 'application/json',
-      'ngrok-skip-browser-warning': 'true'
+    const res = await fetch(`${ API_URL }donations`, { 
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true'
       }
     });
     if (!res.ok) throw new Error("Failed to fetch donations");

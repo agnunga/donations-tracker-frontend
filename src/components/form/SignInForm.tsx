@@ -11,8 +11,9 @@ import Alert from "../ui/alert/Alert";
 import Cookies from 'js-cookie';
 
 
-// const API_URL = "http://localhost:9090/auth/";
-const API_URL = "https://1be0-105-160-20-66.ngrok-free.app/auth/";
+// const baseUrl = process.env.NEXT_LOCAL_BASE_URL;
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const API_URL = `${ baseUrl }/auth/`;
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
