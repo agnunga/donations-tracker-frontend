@@ -5,7 +5,6 @@ import ComponentCard from "@/components/common/ComponentCard";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import Select from "@/components/form/Select";
-import { EyeCloseIcon, EyeIcon } from "@/icons";
 import axios from "axios";
 import { getAuthHeader } from "@/utils/auth";
 
@@ -40,7 +39,6 @@ export default function CreateDonorForm({ closeModal, user, loadUsers }: CreateD
     role: "OPERATIONS",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
