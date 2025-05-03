@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig} from "axios";
 import { getAuthHeader } from "./auth";
 import Cookies from 'js-cookie';
 
@@ -24,6 +24,50 @@ type Beneficiary = {
 // const baseUrl = process.env.NEXT_LOCAL_BASE_URL;
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const API_URL = `${ baseUrl }/api/`;
+const AUTH_URL = `${ baseUrl }/api/`;
+const apiClient: AxiosInstance = axios.create();
+
+// Fix: Correct typing for request interceptor
+apiClient.interceptors.request.use((config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+  alert("interceptors.request called here");
+
+  const token = Cookies.get('token');
+  const refreshtoken = Cookies.get('refreshtoken');
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    alert("interceptors.response called here");
+
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshResponse = await axios.post(`${AUTH_URL}refresh`, null, { withCredentials: true });
+        const newAccessToken = refreshResponse.data.token;
+
+        Cookies.set('token', newAccessToken, { secure: true });
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        console.error('Refresh failed:', refreshError);
+        throw refreshError;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 
 export async function fetchUsers(): Promise<User[]> {
   const url = `${ API_URL }users`;

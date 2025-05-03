@@ -52,10 +52,12 @@ export default function SignInForm() {
       throw new Error(error || "Login failed");
     }
 
-    const { token } = data;
+    const { token, refreshtoken } = data;
 
+    // alert("token ::: " + token + ". refreshtoken :::: " + refreshtoken);
     // Set token in cookies instead of localStorage
-    Cookies.set("token", token, { expires: 7, path: "" }); // Expires in 7 days
+    Cookies.set("token", token, { expires: 0.00347, path: "" }); // Expires in 7 days
+    Cookies.set("refreshtoken", token, { expires: 7, path: "" }); // Expires in 7 days
 
     console.log("Login token ::: ", token);
     router.push("/"); // Redirect after login

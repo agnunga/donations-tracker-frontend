@@ -6,6 +6,7 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import Cookies from 'js-cookie';
 import { redirect } from "next/navigation";
+import { logout } from "@/utils/auth";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,10 +21,11 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
   }
 
   function handleSignOut() {
+    logout();
     // console.log('Before removal:', Cookies.get('token'));
-    Cookies.remove('token', { path: '/' });
+    //Cookies.remove('refreshtoken', { path: '/' });
     // console.log('After removal:', Cookies.get('token'));
-    redirect('/signin'); // Redirect to the signinpage
+    //redirect('/signin'); // Redirect to the signinpage
   }
 
   return (

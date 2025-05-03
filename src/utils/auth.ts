@@ -1,18 +1,25 @@
+import axios from 'axios';
 import Cookies from 'js-cookie';
+import { redirect } from "next/navigation";
 
-// // Check if the user is logged in by checking the cookie
-// export function isLoggedIn() {
-//   return !!Cookies.get("token"); // Check if token exists in cookies
-// }
+// const baseUrl = process.env.NEXT_LOCAL_BASE_URL;
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const API_URL = `${ baseUrl }/auth/`;
 
-// export function isNotLoggedIn() {
-//   return !isLoggedIn(); // Returns true if the user is not logged in
-// }
+export async function logout() {
+  const url = `${API_URL}/logout`;
+  // alert("logout url ::: " + url );
+  try {
+    // Call server logout to invalidate refresh token and clear HTTP-only cookie
+    await axios.post(url, null, { withCredentials: true });
+  } catch (error) {
+    console.warn('Logout request failed:', error);
+    // Still proceed to clear client-side tokens
+  }
 
-// Log out the user by removing the token from the cookie and redirecting to the login page
-export function logout() {
-  Cookies.remove("token"); // Remove token from cookies
-  window.location.href = "/signin"; // Redirect to login
+  Cookies.remove('refreshtoken', { path: '/' });
+
+  redirect('/signin'); // Redirect to the signinpage
 }
 
 // Get Auth Header (for protected requests)
@@ -21,3 +28,32 @@ export const getAuthHeader = () => {
   return token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json',
       'ngrok-skip-browser-warning': 'true' } : {};
 };
+
+export async function refreshAccessToken() {
+  const refreshToken = Cookies.get("refreshToken");
+
+  if (!refreshToken) {
+    console.log("No refresh token found");
+    window.location.href = "/signin"; // Redirect to login if refresh token is absent
+    return;
+  }
+
+  try {
+    const res = await axios.post(
+      `${API_URL}refresh`,
+      {},
+      {
+        headers: {
+          "Refresh-Token": refreshToken,
+        },
+      }
+    );
+
+    const { token } = res.data; // The new access token
+    // Handle the new token (store in HttpOnly cookie on the server-side)
+    console.log("Access token refreshed:", token);
+  } catch (err) {
+    console.error("Token refresh error:", err);
+    window.location.href = "/signin"; // Redirect to login if refresh fails
+  }
+}
