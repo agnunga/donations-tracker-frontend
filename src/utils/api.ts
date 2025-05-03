@@ -29,7 +29,7 @@ const apiClient: AxiosInstance = axios.create();
 
 // Fix: Correct typing for request interceptor
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-  alert("interceptors.request called here");
+  // alert("interceptors.request called here");
 
   const token = Cookies.get('token');
   const refreshtoken = Cookies.get('refreshtoken');
@@ -43,13 +43,14 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig): Interna
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    alert("interceptors.response called here");
+    // alert("interceptors.response called here");
 
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+    alert("interceptors.response called here:::status === 401 " + error)
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 || error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
-
+      alert("interceptors.response called here:::status === 401");
       try {
         const refreshResponse = await axios.post(`${AUTH_URL}refresh`, null, { withCredentials: true });
         const newAccessToken = refreshResponse.data.token;
@@ -57,7 +58,7 @@ apiClient.interceptors.response.use(
         Cookies.set('token', newAccessToken, { secure: true });
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-        return apiClient(originalRequest);
+        return apiClient(originalRequest); // Retry the original request
       } catch (refreshError) {
         console.error('Refresh failed:', refreshError);
         throw refreshError;
@@ -67,7 +68,6 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 export async function fetchUsers(): Promise<User[]> {
   const url = `${ API_URL }users`;
@@ -80,17 +80,26 @@ export async function fetchUsers(): Promise<User[]> {
   }
 }
 
-
-// Fetch with Authorization header, using the token from cookies
 export async function fetchWithAuth<T>(url: string, options: AxiosRequestConfig = {}): Promise<T> {
   const token = Cookies.get("token");
-  if (!token) {
-    throw new Error('No authentication token found');
+  // if (!token) {
+  //   throw new Error('No authentication token found');
+  // }
+  try {
+    const response = await apiClient.get<T>(url, {
+      ...options,
+      headers: {
+        ...getAuthHeader(),
+        ...(options?.headers || {})
+      }
+    } as AxiosRequestConfig);
+    console.log("Response status:", response.status); // Log status code
+    alert("response.data ::: " + response.data);
+    return response.data;
+  } catch (error) {
+    throw error; // Rethrow the error to handle it in a higher-level catch block if necessary
   }
-  const response = await axios.get<T>(url, { headers: getAuthHeader(),  ...options });
-  return response.data;
 }
-
 
 export async function deleteUser(userId: number) {
   if (!userId || typeof userId !== "number") {
@@ -100,7 +109,7 @@ export async function deleteUser(userId: number) {
   console.log("Deleting user with ID:", userId); // Debugging log
 
   try {
-    const response = await axios.delete(`${ API_URL }users/${userId}`, { headers: getAuthHeader() });
+    const response = await apiClient.delete(`${ API_URL }users/${userId}`, { headers: getAuthHeader() }); // Use apiClient here
   
     // Axios automatically throws an error for non-2xx responses, so no need to check response.ok
   
@@ -115,31 +124,29 @@ export async function deleteUser(userId: number) {
     }
   }
 
-  
-  export async function fetchDonations() {
-    const res = await fetch(`${ API_URL }donations`, { 
+export async function fetchDonations() {
+  const res = await apiClient.get(`${ API_URL }donations`, { // Use apiClient here
+    headers: {
+      'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true'
+    }
+  });
+  if (!res.data) throw new Error("Failed to fetch donations");
+  return res.data; // Use data from the response directly
+}
+
+export async function fetchBeneficiaries(): Promise<Beneficiary[]> {
+  const url = `${ API_URL }beneficiaries`;
+  try{
+    const response = await apiClient.get<Beneficiary[]>(url, { // Use apiClient here
       headers: {
         'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': 'true'
       }
     });
-    if (!res.ok) throw new Error("Failed to fetch donations");
-    return res.json();
+    return response.data;
+  } catch (error) {
+    console.error("Error encountered:", error);
+    throw new Error("Error encountered. Contact Support.");
   }
-  
-  export async function fetchBeneficiaries(): Promise<Beneficiary[]> {
-    const url = `${ API_URL }beneficiaries`;
-    try{
-      const response = await axios.get<Beneficiary[]>(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true'
-        }
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error encountered:", error);
-      throw new Error("Error encountered. Contact Support.");
-    }
-  }
-  
+}

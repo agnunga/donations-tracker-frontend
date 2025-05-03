@@ -11,7 +11,7 @@ import { deleteUser } from "@/utils/api";
 
 import { Modal } from "@/components/ui/modal";
 import CreateUserForm from "@/components/form/CreateUser";
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import { useModal } from "@/hooks/useModal";
 import Pagination from "./Pagination";
 
@@ -38,14 +38,61 @@ interface UserTableProps {
       const [selectedUser, setSelectedUser] = useState<User | null>(null);
       const { isOpen, openModal, closeModal } = useModal();
 
-      //Pagination 
+          
+      // Pagination state
       const [currentPage, setCurrentPage] = useState(1);
       const usersPerPage = 5; // Adjust as needed
-      const totalPages = Math.ceil(users.length / usersPerPage);
-      const paginatedUsers = users.slice(
-        (currentPage - 1) * usersPerPage,
-        currentPage * usersPerPage
-      );
+
+      // Calculate total pages
+      const totalPages = Math.ceil((users?.length || 0) / usersPerPage);
+
+      // Paginated users based on the current page
+      const paginatedUsers = Array.isArray(users)
+                              ? users.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage)
+                              : [];
+
+      // Function to change the page
+      const handlePageChange = (page: number) => {
+        if (page < 1 || page > totalPages) return; // Ensure the page is within valid range
+        setCurrentPage(page);
+      };
+
+      // Pagination Controls
+      const renderPagination = () => {
+        const pages = [];
+        for (let i = 1; i <= totalPages; i++) {
+          pages.push(
+            <button
+              key={i}
+              onClick={() => handlePageChange(i)}
+              disabled={currentPage === i}
+              className={`px-4 py-2 ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            >
+              {i}
+            </button>
+          );
+        }
+      
+        return (
+          <div className="flex gap-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-200"
+            >
+              Prev
+            </button>
+            {pages}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-gray-200"
+            >
+              Next
+            </button>
+          </div>
+        );
+      };
 
       const handleAddUser = () => {
         setSelectedUser(null); // Clear user state for adding a new user
@@ -203,11 +250,8 @@ interface UserTableProps {
               </TableBody>
             </Table>
             <div className="flex w-full justify-end mt-6 mb-4 px-6">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
+              {/* Pagination controls */}
+              {renderPagination()}
             </div>
           </div>
         </div>

@@ -25,8 +25,11 @@ export async function logout() {
 // Get Auth Header (for protected requests)
 export const getAuthHeader = () => {
   const token = Cookies.get("token");
-  return token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json',
-      'ngrok-skip-browser-warning': 'true' } : {};
+  return {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true'
+  };
 };
 
 export async function refreshAccessToken() {
