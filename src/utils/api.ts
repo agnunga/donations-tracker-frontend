@@ -24,7 +24,7 @@ type Beneficiary = {
 // const baseUrl = process.env.NEXT_LOCAL_BASE_URL;
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const API_URL = `${ baseUrl }/api/`;
-const AUTH_URL = `${ baseUrl }/api/`;
+const AUTH_URL = `${ baseUrl }/auth/`;
 const apiClient: AxiosInstance = axios.create();
 
 // Fix: Correct typing for request interceptor
@@ -46,14 +46,25 @@ apiClient.interceptors.response.use(
     // alert("interceptors.response called here");
 
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
-    alert("interceptors.response called here:::status === 401 " + error)
+    alert("interceptors.response " + error);
 
-    if (error.response?.status === 401 || error.response?.status === 403 && !originalRequest._retry) {
+    const token = Cookies.get("token");
+    const refreshtoken = Cookies.get("refreshtoken");
+    const url = `${AUTH_URL}refresh`;
+    alert("interceptors.response \n token :: " + token + " \nrefreshtoken : " + refreshtoken + " \nurl : " + url);
+
+    // if (error.response?.status === 401 || error.response?.status === 403 && !originalRequest._retry) {
+    if (!token && refreshtoken) {
       originalRequest._retry = true;
-      alert("interceptors.response called here:::status === 401");
       try {
-        const refreshResponse = await axios.post(`${AUTH_URL}refresh`, null, { withCredentials: true });
+        const refreshResponse = await axios.post(url, null, { 
+          withCredentials: false,
+          headers: {
+            'Refresh-Token': refreshtoken, // ✅ Add this header
+          },
+        });
         const newAccessToken = refreshResponse.data.token;
+        alert("after refreshtoken the request::: newAccessToken::: " + newAccessToken);
 
         Cookies.set('token', newAccessToken, { secure: true });
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -94,7 +105,6 @@ export async function fetchWithAuth<T>(url: string, options: AxiosRequestConfig 
       }
     } as AxiosRequestConfig);
     console.log("Response status:", response.status); // Log status code
-    alert("response.data ::: " + response.data);
     return response.data;
   } catch (error) {
     throw error; // Rethrow the error to handle it in a higher-level catch block if necessary

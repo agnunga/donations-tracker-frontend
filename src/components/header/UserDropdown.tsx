@@ -10,11 +10,12 @@ import { logout } from "@/utils/auth";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const sub = Cookies.get("sub");
 
-function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-  e.stopPropagation();
-  setIsOpen((prev) => !prev);
-}
+  function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.stopPropagation();
+    setIsOpen((prev) => !prev);
+  }
 
   function closeDropdown() {
     setIsOpen(false);
@@ -43,7 +44,7 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
           />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">Oloooo</span>
+        <span className="block mr-1 font-medium text-theme-sm">{ sub }</span>
 
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
