@@ -29,7 +29,7 @@ const apiClient: AxiosInstance = axios.create();
 
 // Fix: Correct typing for request interceptor
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-  // alert("interceptors.request called here");
+  console.log("interceptors.request called here");
 
   const token = Cookies.get('token');
   const refreshtoken = Cookies.get('refreshtoken');
@@ -43,18 +43,18 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig): Interna
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    // alert("interceptors.response called here");
+    console.log("interceptors.response called here");
 
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
-    alert("interceptors.response " + error);
+    console.log("interceptors.response : the errpr::: " + error);
 
     const token = Cookies.get("token");
     const refreshtoken = Cookies.get("refreshtoken");
     const url = `${AUTH_URL}refresh`;
-    alert("interceptors.response \n token :: " + token + " \nrefreshtoken : " + refreshtoken + " \nurl : " + url);
+    console.log("interceptors.response \n token :: " + token + " \nrefreshtoken : " + refreshtoken + " \nurl : " + url);
 
-    // if (error.response?.status === 401 || error.response?.status === 403 && !originalRequest._retry) {
-    if (!token && refreshtoken) {
+    // if (token && error.response?.status === 401 || error.response?.status === 403 && !originalRequest._retry) {
+    if (false) {
       originalRequest._retry = true;
       try {
         const refreshResponse = await axios.post(url, null, { 
@@ -64,7 +64,7 @@ apiClient.interceptors.response.use(
           },
         });
         const newAccessToken = refreshResponse.data.token;
-        alert("after refreshtoken the request::: newAccessToken::: " + newAccessToken);
+        console.log("after refreshtoken the request::: newAccessToken::: " + newAccessToken);
 
         Cookies.set('token', newAccessToken, { secure: true });
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -92,22 +92,19 @@ export async function fetchUsers(): Promise<User[]> {
 }
 
 export async function fetchWithAuth<T>(url: string, options: AxiosRequestConfig = {}): Promise<T> {
-  const token = Cookies.get("token");
-  // if (!token) {
-  //   throw new Error('No authentication token found');
-  // }
   try {
     const response = await apiClient.get<T>(url, {
       ...options,
+      withCredentials: true, 
       headers: {
-        ...getAuthHeader(),
-        ...(options?.headers || {})
+        'ngrok-skip-browser-warning': 'true',
+        ...(options?.headers || {}) 
       }
-    } as AxiosRequestConfig);
-    console.log("Response status:", response.status); // Log status code
+    });
+    console.log("Response status:", response.status);
     return response.data;
   } catch (error) {
-    throw error; // Rethrow the error to handle it in a higher-level catch block if necessary
+    throw error;
   }
 }
 

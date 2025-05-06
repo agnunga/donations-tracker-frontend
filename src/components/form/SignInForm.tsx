@@ -39,9 +39,10 @@ export default function SignInForm() {
   console.log("Login formData ::: ", formData);
 
   try {
-    const res = await fetch(`${ API_URL }login`, {
+    const res = await fetch(`${ API_URL }login-web`, {
       method: "POST",
       headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+      credentials: 'include',
       body: JSON.stringify(formData),
     });
 
@@ -52,15 +53,10 @@ export default function SignInForm() {
       throw new Error(error || "Login failed");
     }
 
-    const { token, refreshtoken, sub } = data;
-
-    // alert("token ::: " + token + ". refreshtoken :::: " + refreshtoken);
-    // Set token in cookies instead of localStorage
-    Cookies.set("token", token, { expires: 0.00347, path: "" }); // Expires in 7 days
-    Cookies.set("refreshtoken", refreshtoken, { expires: 7, path: "" }); // Expires in 7 days
+    const { sub } = data;
     Cookies.set("sub", sub, { expires: 7, path: "" }); // Expires in 7 days
+    console.log("Login token, refreshtoken, sub ::: \n" + sub + "\n");
 
-    console.log("Login token ::: ", token);
     router.push("/"); // Redirect after login
   } catch (err: unknown) {
     if (err instanceof Error) {

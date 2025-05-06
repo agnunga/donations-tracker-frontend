@@ -7,7 +7,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const API_URL = `${ baseUrl }/auth/`;
 
 export async function logout() {
-  const url = `${API_URL}/logout`;
+  const url = `${API_URL}logout`;
   // alert("logout url ::: " + url );
   try {
     // Call server logout to invalidate refresh token and clear HTTP-only cookie
@@ -58,5 +58,22 @@ export async function refreshAccessToken() {
   } catch (err) {
     console.error("Token refresh error:", err);
     window.location.href = "/signin"; // Redirect to login if refresh fails
+  }
+}
+
+// Client-side auth check
+export async function isUserLoggedIn(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_URL}check`, {
+      method: 'GET',
+      credentials: 'include', // include cookies
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+      }
+    });
+
+    return response.ok;
+  } catch {
+    return false;
   }
 }

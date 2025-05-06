@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import Cookies from 'js-cookie';
@@ -10,7 +10,12 @@ import { logout } from "@/utils/auth";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const sub = Cookies.get("sub");
+  const [sub, setSub] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const value = Cookies.get("sub");
+    setSub(value);
+  }, []);
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.stopPropagation();
@@ -43,9 +48,10 @@ export default function UserDropdown() {
             alt="User"
           />
         </span>
-
-        <span className="block mr-1 font-medium text-theme-sm">{ sub }</span>
-
+        {/* only render when sub is defined */}
+        {sub && (
+          <span className="block mr-1 font-medium text-theme-sm">{sub}</span>
+        )}
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
