@@ -1,6 +1,5 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { redirect } from "next/navigation";
 
 // const baseUrl = process.env.NEXT_LOCAL_BASE_URL;
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;

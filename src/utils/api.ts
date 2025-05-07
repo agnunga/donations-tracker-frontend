@@ -1,6 +1,7 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig} from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, 
+  // AxiosResponse, 
+  AxiosError, InternalAxiosRequestConfig} from "axios";
 import { getAuthHeader } from "./auth";
-import Cookies from 'js-cookie';
 
 type User = {
   id: number;
@@ -31,12 +32,6 @@ const apiClient: AxiosInstance = axios.create();
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   console.log("interceptors.request called here");
 
-  const token = Cookies.get('token');
-  const refreshtoken = Cookies.get('refreshtoken');
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
   return config;
 });
 
@@ -48,10 +43,8 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
     console.log("interceptors.response : the errpr::: " + error);
 
-    const token = Cookies.get("token");
-    const refreshtoken = Cookies.get("refreshtoken");
     const url = `${AUTH_URL}refresh`;
-    console.log("interceptors.response \n token :: " + token + " \nrefreshtoken : " + refreshtoken + " \nurl : " + url);
+    console.log("interceptors.response \n token :: " + " \nurl : " + url);
 
     // if (token && error.response?.status === 401 || error.response?.status === 403 && !originalRequest._retry) {
     if (false) {
@@ -60,14 +53,11 @@ apiClient.interceptors.response.use(
         const refreshResponse = await axios.post(url, null, { 
           withCredentials: false,
           headers: {
-            'Refresh-Token': refreshtoken, // ✅ Add this header
+            'ngrok-skip-browser-warning': 'true',
           },
         });
         const newAccessToken = refreshResponse.data.token;
         console.log("after refreshtoken the request::: newAccessToken::: " + newAccessToken);
-
-        Cookies.set('token', newAccessToken, { secure: true });
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return apiClient(originalRequest); // Retry the original request
       } catch (refreshError) {

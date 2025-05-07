@@ -76,7 +76,7 @@ export default function CreateDonorForm({ closeModal, user, loadUsers }: CreateD
       const response = await axios({
         method,
         url,
-        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        headers: { ...getAuthHeader() },
         data: { ...formData, role: formData.role },
       });
     

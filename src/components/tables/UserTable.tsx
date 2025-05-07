@@ -8,12 +8,10 @@ import {
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
 import { deleteUser } from "@/utils/api";
-
 import { Modal } from "@/components/ui/modal";
 import CreateUserForm from "@/components/form/CreateUser";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useModal } from "@/hooks/useModal";
-import Pagination from "./Pagination";
 
 // Define User interface
 type User = {
@@ -34,11 +32,9 @@ interface UserTableProps {
   export default function UserTable({ users, loadUsers }: UserTableProps) {
 
       // const [loading, setLoading] = useState(true);
-
       const [selectedUser, setSelectedUser] = useState<User | null>(null);
       const { isOpen, openModal, closeModal } = useModal();
 
-          
       // Pagination state
       const [currentPage, setCurrentPage] = useState(1);
       const usersPerPage = 5; // Adjust as needed
@@ -259,5 +255,3 @@ interface UserTableProps {
     </div>
   );
 }
-
-

@@ -78,7 +78,7 @@ export default function CreateUserForm({ closeModal, user, loadUsers }: CreateUs
       const response = await axios({
         method,
         url,
-        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        headers: { ...getAuthHeader() },
         data: { ...formData, role: formData.role },
       });
     

@@ -2,7 +2,6 @@ import SignInForm from "@/components/form/SignInForm";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import Cookies from 'js-cookie';
 
 export const metadata: Metadata = {
   title: "SignIn | Donations Tracking System",
