@@ -6,21 +6,28 @@ import { redirect } from "next/navigation";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const API_URL = `${ baseUrl }/auth/`;
 
-export async function logout() {
-  const url = `${API_URL}logout`;
-  // alert("logout url ::: " + url );
+export async function logout(): Promise<boolean> {
   try {
-    // Call server logout to invalidate refresh token and clear HTTP-only cookie
-    await axios.post(url, null, { withCredentials: true });
+    const response = await axios.post(`${API_URL}logout`, null, {
+      withCredentials: true,
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+      },
+    });
+
+    if (response.data?.success) {
+      Cookies.remove('sub', { path: '/' });
+      return true; // Logout successful
+    } else {
+      console.warn('Logout response was not successful:', response.data);
+      return false;
+    }
   } catch (error) {
-    console.warn('Logout request failed:', error);
-    // Still proceed to clear client-side tokens
+    console.error('Logout error:', error);
+    return false; // Logout failed
   }
-
-  Cookies.remove('refreshtoken', { path: '/' });
-
-  redirect('/signin'); // Redirect to the signinpage
 }
+
 
 // Get Auth Header (for protected requests)
 export const getAuthHeader = () => {
@@ -63,8 +70,11 @@ export async function refreshAccessToken() {
 
 // Client-side auth check
 export async function isUserLoggedIn(): Promise<boolean> {
+  const url = `${API_URL}check`;
+  console.log("isUserLoggedIn::: returns F||F: URL:::: " + url)
+
   try {
-    const response = await fetch(`${API_URL}check`, {
+    const response = await fetch(url, {
       method: 'GET',
       credentials: 'include', // include cookies
       headers: {
@@ -72,7 +82,12 @@ export async function isUserLoggedIn(): Promise<boolean> {
       }
     });
 
-    return response.ok;
+    // If response status is 401, return false (user is logged out)
+    if (response.status === 401) {
+      return false;
+    }
+
+    return response.ok; // still ok if user is logged in
   } catch {
     return false;
   }

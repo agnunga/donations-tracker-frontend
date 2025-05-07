@@ -4,7 +4,9 @@ import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { isUserLoggedIn } from "@/utils/auth";
 
 export default function AdminLayout({
   children,
@@ -12,6 +14,23 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const status = await isUserLoggedIn();
+      console.log("status of isuserlogged in??? " + status)
+      if (!status) {
+        router.push("/signin");
+      } else {
+        setIsLoading(false);
+      }
+    };
+    checkLoginStatus();
+  }, [router]);
+
+  if (isLoading) return null; // or a loading spinner
 
   // Dynamic class for main content margin based on sidebar state
   const mainContentMargin = isMobileOpen
