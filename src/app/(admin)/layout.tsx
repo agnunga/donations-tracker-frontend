@@ -6,7 +6,7 @@ import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isUserLoggedIn } from "@/utils/auth";
+import { isUserLoggedIn, isUserLoggedInViaRefresh } from "@/utils/auth";
 
 export default function AdminLayout({
   children,
@@ -19,8 +19,15 @@ export default function AdminLayout({
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const status = await isUserLoggedIn();
-      console.log("status of isuserlogged in??? " + status)
+      //check for an active session
+      let status = await isUserLoggedIn();
+      console.log("status of isuserlogged in??? " + status);
+      if (!status) {
+        // If no active session, refresh the session using the refresh token
+        status = await isUserLoggedInViaRefresh();
+        console.log("status of isUserLoggedInViaRefresh:", status);
+      }
+  
       if (!status) {
         router.push("/signin");
       } else {

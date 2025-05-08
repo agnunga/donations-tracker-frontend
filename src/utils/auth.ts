@@ -69,7 +69,7 @@ export async function refreshAccessToken() {
 
 // Client-side auth check
 export async function isUserLoggedIn(): Promise<boolean> {
-  const url = `${API_URL}check`;
+  const url = `${API_URL}check-session`;
   console.log("isUserLoggedIn::: returns F||F: URL:::: " + url)
 
   try {
@@ -88,6 +88,23 @@ export async function isUserLoggedIn(): Promise<boolean> {
 
     return response.ok; // still ok if user is logged in
   } catch {
+    return false;
+  }
+}
+
+export async function isUserLoggedInViaRefresh(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_URL}validate-refresh`, {
+      credentials: "include",
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
+
+    // 200 OK indicates valid session
+    return response.ok;
+  } catch (error) {
+    console.error("Refresh token validation failed:", error);
     return false;
   }
 }
